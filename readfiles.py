@@ -11,3 +11,13 @@ def read_raw_events(filename):
     reader = csv.reader(file)
     for row in reader:
         print(row)
+
+def read_results(filename):
+    try: 
+        file = open(filename, 'r')
+    except:
+        print("Impossible d'ouvrir le fichier : " + filename)
+        return
+    reader = csv.reader(file)
+    for row in reader:
+        print(row)

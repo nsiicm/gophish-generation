@@ -10,5 +10,6 @@ parser.add_argument("-v","--verbose", action="store_true", help="Afficher les de
 
 args = vars(parser.parse_args())
 
-read_raw_events(args['raw_events'])
+#read_raw_events(args['raw_events'])
+read_results(args['results'])
 
