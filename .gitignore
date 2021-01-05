@@ -1,3 +1,5 @@
 /~$mplate.docx
 __pycache__/
 api.py
+latex/
+config.ini

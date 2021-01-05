@@ -1,7 +1,9 @@
 import argparse
 from user import User
-from campaigns import Campaigns
+from audit import Audit
 from api import *
+from report import Report
+
 
 parser = argparse.ArgumentParser(description='Creation de rapport avec exports Gophish') #Creation du parser d'arguments et ajout description
 
@@ -10,6 +12,11 @@ parser.add_argument("-r","--results", help="Indiquer le fichier d'export Gophish
 parser.add_argument("-v","--verbose", action="store_true", help="Afficher les details de traitement", required=False)
 
 args = vars(parser.parse_args())
-api_request("/api/smtp/")
 
+print("Searching for campaigns via API")
+audit = Audit("test")
+print(str(audit.len()) + " campaigns found : ")
+print(audit.get_names())
 
+rapport = Report(audit)
+rapport.render("eee")

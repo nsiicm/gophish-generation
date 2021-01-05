@@ -1,0 +1,55 @@
+\documentclass[12pt, letterpaper, twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{xltabular}
+
+
+\title{Rapport campagne phishing}
+\author{Auteur}
+
+\date{February 2014}
+
+\begin{document}
+
+\begin{titlepage}
+\maketitle
+\end{titlepage}
+
+\section{Campagnes}
+\BLOCK{ for campaign in campaigns }
+    \subsection{\VAR{campaign["name"]}}
+
+    Parametres de la page :
+
+
+    \begin{tabular}{|l|c|r|}
+        \hline
+        Nom de la page & \VAR{campaign["landing_name"]}\\
+        \hline
+        URL d'arrivee & \VAR{campaign["url"]}\\
+        \hline
+        Capture des donnees &  \VAR{campaign["credentials"]}\\
+        \hline
+        Capture des mots de passe & \VAR{campaign["passwords"]}\\
+        \hline
+        URL de redirection & \VAR{campaign["redirect"]}\\
+        \hline
+    \end{tabular}
+
+
+    \includegraphics[width=13cm]{\VAR{campaign["landing_html_rendered"]}}
+
+    Parametres du mail :
+
+
+    \begin{tabular}{|l|c|r|}
+        \hline
+        Date de lancement & \VAR{campaign["launch_date"]}\\
+        \hline
+        Date de fin d'envoi & \VAR{campaign["launch_by_date"]}\\
+        \hline
+        Date de Fin & \VAR{campaign["completed_date"]}\\
+        \hline
+    \end{tabular}
+\BLOCK{ endfor }
+\end{document}
