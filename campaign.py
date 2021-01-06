@@ -3,13 +3,14 @@ from jinja2 import Template
 import datetime
 import imgkit
 import pdfkit
-from api import *
 import os
 
 
 class Campaign:
 
-
+    results= []
+    stat = {}
+    stat_perc = {}
 
     def __init__(self, campaign):
         self.name = campaign["name"].replace("_"," ")
@@ -26,6 +27,7 @@ class Campaign:
         self.send_by_date = campaign["send_by_date"]
         self.completed_date = campaign["completed_date"]
         self.url = campaign["url"]
+        self.calc_stats(campaign["results"])
 
     def serialize(self):
         serialized = {}
@@ -47,7 +49,13 @@ class Campaign:
         serialized['launch_date'] = self.launch_date
         serialized['send_by_date'] = self.send_by_date
         serialized['completed_date'] = self.completed_date
+        serialized['stat'] = self.stat
+        serialized['stat_perc'] = self.stat_perc
         serialized['url'] = self.url
+ #       serialized['sent'] = self.sent
+ #       serialized['opened'] = self.opened
+ #       serialized['clicked'] = self.clicked
+ #       serialized['submitted'] = self.submitted
         return serialized
 
     def render_email(self):
@@ -80,3 +88,21 @@ class Campaign:
         imgkit.from_string(html,os.path.abspath(path),config=config,options=options)
         return filename
 
+    def calc_stats(self, results):
+        self.stat["sent"] = 0
+        self.stat["opened"] = 0
+        self.stat["clicked"] = 0
+        self.stat["submitted"] = 0
+        for result in results:
+            if result["status"] == 'Email Sent' or result["status"] == 'Email Opened' or result["status"] == 'Clicked Link' or result["status"] == 'Submitted Data' :
+                self.stat["sent"] += 1
+            if result["status"] == 'Email Opened' or result["status"] == 'Clicked Link' or result["status"] == 'Submitted Data':
+                self.stat["opened"] += 1
+            if result["status"] == 'Clicked Link' or result["status"] == 'Submitted Data':
+                self.stat["clicked"] += 1
+            if result["status"] == 'Submitted Data':
+                self.stat["submitted"] += 1
+        self.stat_perc["sent"] = 100
+        self.stat_perc["opened"] = 100 / self.stat["sent"] * self.stat["opened"]
+        self.stat_perc["clicked"] = 100 / self.stat["sent"] * self.stat["clicked"]
+        self.stat_perc["submitted"] = 100 / self.stat["sent"] * self.stat["submitted"]

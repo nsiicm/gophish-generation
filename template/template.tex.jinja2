@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{xltabular}
+\usepackage{pgfplots}
 
 
 \title{Rapport campagne phishing}
@@ -18,7 +19,7 @@
 \section{Campagnes}
 \BLOCK{ for campaign in campaigns }
     \subsection{\VAR{campaign["name"]}}
-    \subsection{Parametres de la campagne}
+    \subsubsection{Parametres de la campagne}
     Parametres de la page :
     \\
     \\
@@ -64,5 +65,40 @@
         Date de Fin & \VAR{campaign["completed_date"]}\\
         \hline
     \end{tabular}
+    \subsubsection{Resultats}
+        \begin{tikzpicture}
+            \begin{axis}[
+              ybar,
+              enlargelimits=0.15,
+              legend style={at={(0.5,-0.2)},
+                anchor=north,legend columns=-1},
+              ylabel={Nombre mails},
+              symbolic x coords={Envoye,Ouvert,Clic,Donnees},
+              xtick=data,
+              nodes near coords, 
+              nodes near coords align={vertical},
+              x tick label style={rotate=45,anchor=east},
+              ]
+              \addplot coordinates {(Envoye,\VAR{campaign["stat"]["sent"]}) (Ouvert,\VAR{campaign["stat"]["opened"]}) 
+                  (Clic,\VAR{campaign["stat"]["clicked"]}) (Donnees,\VAR{campaign["stat"]["submitted"]})};
+            \end{axis}
+          \end{tikzpicture}
+            \begin{tikzpicture}
+            \begin{axis}[
+              ybar,
+              enlargelimits=0.15,
+              legend style={at={(0.5,-0.2)},
+                anchor=north,legend columns=-1},
+              ylabel={Pourcentage},
+              symbolic x coords={Envoye,Ouvert,Clic,Donnees},
+              xtick=data,
+              nodes near coords, 
+              nodes near coords align={vertical},
+              x tick label style={rotate=45,anchor=east},
+              ]
+              \addplot coordinates {(Envoye,\VAR{campaign["stat_perc"]["sent"]}) (Ouvert,\VAR{campaign["stat_perc"]["opened"]}) 
+                  (Clic,\VAR{campaign["stat_perc"]["clicked"]}) (Donnees,\VAR{campaign["stat_perc"]["submitted"]})};
+            \end{axis}
+          \end{tikzpicture}
 \BLOCK{ endfor }
 \end{document}
