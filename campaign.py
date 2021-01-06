@@ -1,9 +1,10 @@
 import jinja2
 from jinja2 import Template
-import datetime
+
 import imgkit
 import pdfkit
 import os
+from datetime import datetime
 
 
 class Campaign:
@@ -11,6 +12,7 @@ class Campaign:
     results= []
     stat = {}
     stat_perc = {}
+    events = []
 
     def __init__(self, campaign):
         self.name = campaign["name"].replace("_"," ")
@@ -28,6 +30,7 @@ class Campaign:
         self.completed_date = campaign["completed_date"]
         self.url = campaign["url"]
         self.calc_stats(campaign["results"])
+        self.events_timeline(campaign["timeline"])
 
     def serialize(self):
         serialized = {}
@@ -52,14 +55,11 @@ class Campaign:
         serialized['stat'] = self.stat
         serialized['stat_perc'] = self.stat_perc
         serialized['url'] = self.url
- #       serialized['sent'] = self.sent
- #       serialized['opened'] = self.opened
- #       serialized['clicked'] = self.clicked
- #       serialized['submitted'] = self.submitted
+        serialized['timeline'] = self.events
         return serialized
 
     def render_email(self):
-        date = datetime.datetime.now()
+        date = datetime.now()
         filename = date.strftime("%f") + '.jinja2'
         path = './template/' + filename
         f = open(os.path.abspath(path), "a")
@@ -78,8 +78,8 @@ class Campaign:
         return self.render_html(html)
 
     def render_html(self,html):
-        date = datetime.datetime.now()
-        filename =  date.strftime("%f") + ".png"
+        actual_date = datetime.now()
+        filename =  actual_date.strftime("%f") + ".png"
         path = './latex/' + filename
         path_wkhtmltoimage = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe'
         config = imgkit.config(wkhtmltoimage=path_wkhtmltoimage)
@@ -106,3 +106,34 @@ class Campaign:
         self.stat_perc["opened"] = 100 / self.stat["sent"] * self.stat["opened"]
         self.stat_perc["clicked"] = 100 / self.stat["sent"] * self.stat["clicked"]
         self.stat_perc["submitted"] = 100 / self.stat["sent"] * self.stat["submitted"]
+
+    def events_timeline(self,eventlist):
+        mintimestamp = 999999999999999999
+        maxtimestamp = 0
+        for event in eventlist:
+            if event["message"] != "Campaign Created":
+                eventtimestamp = datetime.fromisoformat(event["time"][:-1]).timestamp()
+                if eventtimestamp > maxtimestamp:
+                    maxtimestamp = eventtimestamp
+                if mintimestamp > eventtimestamp:
+                    mintimestamp = eventtimestamp
+
+        timestamp = maxtimestamp - mintimestamp
+        for event in eventlist:
+            if event["message"] != "Campaign Created":
+                event_timestamp = datetime.fromisoformat(event["time"][:-1]).timestamp() - mintimestamp
+                time = (100 / (timestamp)) * (event_timestamp)
+                print(event["message"])
+                if 'Sent' in event["message"]:
+                    status = "sent"
+                elif 'Opened' in event["message"]:
+                    status = "opened"
+                elif event["message"] == 'Clicked Link':
+                    status = "clicked"
+                elif event["message"] == 'Submitted Data':
+                    status = 'submitted'
+                else:
+                    status = "aaaaaa"
+                eventdict = {'adv' : str(int(time)), 'status' : status  }
+            #"{'adv' : " + str(int(time)) + ",'status' : '" + status + "'}"
+                self.events.append(eventdict)

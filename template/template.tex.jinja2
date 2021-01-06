@@ -3,6 +3,62 @@
 \usepackage{graphicx}
 \usepackage{xltabular}
 \usepackage{pgfplots}
+\usepackage{chronology}
+
+
+\newcommand{\sent}[3][e]{%
+    \pgfmathsetlength\xstop{(#2-\theyearstart)*\unit}%
+    \ifx #1e%
+        \draw[fill=green,draw=none,opacity=1]%
+            (\xstop, 0) circle (.5\unit)%
+            node[opacity=1,rotate=0] {#3};%
+    \else%
+        \pgfmathsetlength\xstart{(#1-\theyearstart)*\unit}%
+        \draw[fill=green,draw=none,opacity=1,rounded corners=.2\unit]%
+            (\xstart,-.2\unit) rectangle%
+            node[opacity=1,rotate=0,above=.0\unit] {#3} (\xstop,.2\unit);%
+    \fi}%
+
+\newcommand{\opened}[3][e]{%
+    \pgfmathsetlength\xstop{(#2-\theyearstart)*\unit}%
+    \ifx #1e%
+        \draw[fill=yellow,draw=none,opacity=1]%
+            (\xstop, 0) circle (.5\unit)%
+            node[opacity=1,rotate=0] {#3};%
+    \else%
+        \pgfmathsetlength\xstart{(#1-\theyearstart)*\unit}%
+        \draw[fill=yellow,draw=none,opacity=1,rounded corners=.2\unit]%
+            (\xstart,-.2\unit) rectangle%
+            node[opacity=1,rotate=0,above=.0\unit] {#3} (\xstop,.2\unit);%
+    \fi}%
+
+\newcommand{\clicked}[3][e]{%
+    \pgfmathsetlength\xstop{(#2-\theyearstart)*\unit}%
+    \ifx #1e%
+        \draw[fill=orange,draw=none,opacity=1]%
+            (\xstop, 0) circle (.5\unit)%
+            node[opacity=1,rotate=0] {#3};%
+    \else%
+        \pgfmathsetlength\xstart{(#1-\theyearstart)*\unit}%
+        \draw[fill=orange,draw=none,opacity=1,rounded corners=.2\unit]%
+            (\xstart,-.2\unit) rectangle%
+            node[opacity=1,rotate=0,above=.0\unit] {#3} (\xstop,.2\unit);%
+    \fi}%
+
+\newcommand{\submitted}[3][e]{%
+    \pgfmathsetlength\xstop{(#2-\theyearstart)*\unit}%
+    \ifx #1e%
+        \draw[fill=red,draw=none,opacity=1]%
+            (\xstop, 0) circle (.5\unit)%
+            node[opacity=1,rotate=0] {#3};%
+    \else%
+        \pgfmathsetlength\xstart{(#1-\theyearstart)*\unit}%
+        \draw[fill=red,draw=none,opacity=1,rounded corners=.2\unit]%
+            (\xstart,-.2\unit) rectangle%
+            node[opacity=1,rotate=0,above=.0\unit] {#3} (\xstop,.2\unit);%
+    \fi}%
+
+
 
 
 \title{Rapport campagne phishing}
@@ -56,6 +112,9 @@
     \includegraphics[width=13cm]{\VAR{campaign["email_html_rendered"]}}
     \\
     \\
+    Parametres generaux
+    \\
+    \\
     \begin{tabular}{|l|c|r|}
         \hline
         Date de lancement & \VAR{campaign["launch_date"]}\\
@@ -100,5 +159,10 @@
                   (Clic,\VAR{campaign["stat_perc"]["clicked"]}) (Donnees,\VAR{campaign["stat_perc"]["submitted"]})};
             \end{axis}
           \end{tikzpicture}
+            \begin{chronology}[10]{0}{100}{100ex}[\textwidth]
+            \BLOCK{ for event in campaign["timeline"] }
+            \\VAR{event["status"]}{\VAR{event["adv"]}}{}
+            \BLOCK{ endfor }
+            \end{chronology}
 \BLOCK{ endfor }
 \end{document}
