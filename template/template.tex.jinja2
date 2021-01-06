@@ -18,10 +18,10 @@
 \section{Campagnes}
 \BLOCK{ for campaign in campaigns }
     \subsection{\VAR{campaign["name"]}}
-
+    \subsection{Parametres de la campagne}
     Parametres de la page :
-
-
+    \\
+    \\
     \begin{tabular}{|l|c|r|}
         \hline
         Nom de la page & \VAR{campaign["landing_name"]}\\
@@ -35,13 +35,26 @@
         URL de redirection & \VAR{campaign["redirect"]}\\
         \hline
     \end{tabular}
-
-
+    \\
+    \\
     \includegraphics[width=13cm]{\VAR{campaign["landing_html_rendered"]}}
-
+    \\
+    \\
     Parametres du mail :
-
-
+    \\
+    \\
+    \begin{tabular}{|l|c|r|}
+        \hline
+        Nom du Template & \VAR{campaign["email_name"]}\\
+        \hline
+        Objet du mail & \VAR{campaign["email_subject"]}\\
+        \hline
+    \end{tabular}
+    \\
+    \\
+    \includegraphics[width=13cm]{\VAR{campaign["email_html_rendered"]}}
+    \\
+    \\
     \begin{tabular}{|l|c|r|}
         \hline
         Date de lancement & \VAR{campaign["launch_date"]}\\
