@@ -27,7 +27,6 @@ class Report():
         )
         template = latex_jinja_env.get_template('template.tex.jinja2')
         data = self.audit.serialize()
-        print(data)
         f = open(os.path.abspath('./latex/rendered.tex'), "a")
         f.truncate(0)
         f.write(template.render(data))

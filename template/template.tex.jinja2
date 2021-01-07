@@ -4,6 +4,7 @@
 \usepackage{xltabular}
 \usepackage{pgfplots}
 \usepackage{chronology}
+\usepackage{tkz-euclide}
 
 
 \newcommand{\sent}[3][e]{%
@@ -164,5 +165,27 @@
             \\VAR{event["status"]}{\VAR{event["adv"]}}{}
             \BLOCK{ endfor }
             \end{chronology}
+            \begin{tikzpicture}
+                \tkzDefPoint(0,1.5){A}
+                \tkzDefPoint(0,1){B}
+                \tkzDefPoint(0,0.5){C}
+                \tkzDefPoint(0,0){D}
+                \tkzDrawPoint[color=green,fill=green](A)
+                \tkzDrawPoint[color=yellow,fill=yellow](B)
+                \tkzDrawPoint[color=orange,fill=orange](C)
+                \tkzDrawPoint[color=red,fill=red](D)
+                \tkzLabelPoint[right](A){$Evoi$}
+                \tkzLabelPoint[right](B){$Ouverture$}
+                \tkzLabelPoint[right](C){$Clic$}
+                \tkzLabelPoint[right](D){$Donnees$}
+            \end{tikzpicture}
+                                \\
+                    \\
+                    \\
+                    Criticite des donnees : 
+                    \\
+                    \\
+                    \VAR{campaign['critical']}
+                    \\
 \BLOCK{ endfor }
 \end{document}

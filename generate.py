@@ -1,7 +1,6 @@
 import argparse
 from user import User
 from audit import Audit
-from api import *
 from report import Report
 
 
@@ -14,7 +13,7 @@ parser.add_argument("-v","--verbose", action="store_true", help="Afficher les de
 args = vars(parser.parse_args())
 
 print("Searching for campaigns via API")
-audit = Audit("DONNEES")
+audit = Audit("")
 print(str(audit.len()) + " campaigns found : ")
 print(audit.get_names())
 
