@@ -1,11 +1,13 @@
-\documentclass[12pt, letterpaper, twoside]{article}
+\documentclass[12pt, letterpaper, oneside]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{xltabular}
 \usepackage{pgfplots}
 \usepackage{chronology}
 \usepackage{tkz-euclide}
+\usepackage{layout}
 
+\hoffset=-1.5cm
 
 \newcommand{\sent}[3][e]{%
     \pgfmathsetlength\xstop{(#2-\theyearstart)*\unit}%
@@ -160,6 +162,50 @@
                   (Clic,\VAR{campaign["stat_perc"]["clicked"]}) (Donnees,\VAR{campaign["stat_perc"]["submitted"]})};
             \end{axis}
           \end{tikzpicture}
+          \newpage
+            \begin{tikzpicture}
+                      \begin{axis}[
+                      bar width=0.5cm,
+                      width=18cm,
+                      height=10cm,
+                          ybar,
+                          enlargelimits=0.15,
+                          legend style={at={(0.5,-0.15)},
+                            anchor=north,legend columns=-1},
+                          ylabel={Nombre mails},
+                          symbolic x coords={Envoye,Ouvert,Clic,Donnees},
+                          xtick=data,
+                          nodes near coords,
+                          nodes near coords align={vertical},
+                          ]
+                      \BLOCK{ for position in campaign["positions"] }
+                      \addplot coordinates {(Envoye,\VAR{position['sent']}) (Ouvert,\VAR{position['opened']}) (Clic,\VAR{position['clicked']}) (Donnees,\VAR{position['submitted']})};
+                      \BLOCK{ endfor }
+                      \legend{\BLOCK{ for position in campaign["positions"] }\VAR{position['name']},\BLOCK{ endfor }}
+                      \end{axis}
+                \end{tikzpicture}
+                \begin{tikzpicture}
+                      \begin{axis}[
+                      bar width=0.5cm,
+                      width=18cm,
+                      height=10cm,
+                          ybar,
+                          enlargelimits=0.15,
+                          legend style={at={(0.5,-0.15)},
+                            anchor=north,legend columns=-1},
+                          ylabel={Pourcentage},
+                          symbolic x coords={Envoye,Ouvert,Clic,Donnees},
+                          xtick=data,
+                          nodes near coords,
+                          nodes near coords align={vertical},
+                          ]
+                      \BLOCK{ for position in campaign["positions_perc"] }
+                      \addplot coordinates {(Envoye,\VAR{position['sent']}) (Ouvert,\VAR{position['opened']}) (Clic,\VAR{position['clicked']}) (Donnees,\VAR{position['submitted']})};
+                      \BLOCK{ endfor }
+                      \legend{\BLOCK{ for position in campaign["positions_perc"] }\VAR{position['name']},\BLOCK{ endfor }}
+                      \end{axis}
+                \end{tikzpicture}
+            \newline
             \begin{chronology}[10]{0}{100}{100ex}[\textwidth]
             \BLOCK{ for event in campaign["timeline"] }
             \\VAR{event["status"]}{\VAR{event["adv"]}}{}

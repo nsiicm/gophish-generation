@@ -11,9 +11,7 @@ import codecs
 class Campaign:
 
    # results= []
-
-    
-
+   
     def __init__(self, campaign):
         self.name = campaign["name"].replace("_"," ")
         self.id = campaign["id"]
@@ -58,6 +56,8 @@ class Campaign:
         serialized['url'] = self.url
         serialized['timeline'] = self.events
         serialized['critical'] = self.critical
+        serialized['positions'] = self.stat_position
+        serialized['positions_perc'] = self.stat_position_perc
         print(self.name)
         print(self.stat)
         return serialized
@@ -99,25 +99,53 @@ class Campaign:
     def calc_stats(self, results):
         self.stat = {}
         self.stat_perc = {}
+        self.stat_position_dict = {}
+        self.stat_position_perc = []
         self.stat["sent"] = 0
         self.stat["opened"] = 0
         self.stat["clicked"] = 0
         self.stat["submitted"] = 0
         print(self.stat["opened"])
         for result in results:
+            position = result["position"]
+            if position == '':
+                position = 'Autre'
+            if position not in self.stat_position_dict: 
+                self.stat_position_dict[position] = {}
+                self.stat_position_dict[position]["name"] = position
+                self.stat_position_dict[position]["sent"] = 0
+                self.stat_position_dict[position]["opened"] = 0
+                self.stat_position_dict[position]["clicked"] = 0
+                self.stat_position_dict[position]["submitted"] = 0
             if result["status"] == 'Email Sent' or result["status"] == 'Email Opened' or result["status"] == 'Clicked Link' or result["status"] == 'Submitted Data' :
                 self.stat["sent"] += 1
+                self.stat_position_dict[position]["sent"] += 1
             if result["status"] == 'Email Opened' or result["status"] == 'Clicked Link' or result["status"] == 'Submitted Data':
                 self.stat["opened"] += 1
+                self.stat_position_dict[position]["opened"] += 1
             if result["status"] == 'Clicked Link' or result["status"] == 'Submitted Data':
                 self.stat["clicked"] += 1
+                self.stat_position_dict[position]["clicked"] += 1
             if result["status"] == 'Submitted Data':
                 self.stat["submitted"] += 1
-        
+                self.stat_position_dict[position]["submitted"] += 1
         self.stat_perc["sent"] = 100
         self.stat_perc["opened"] = 100 / self.stat["sent"] * self.stat["opened"]
         self.stat_perc["clicked"] = 100 / self.stat["sent"] * self.stat["clicked"]
         self.stat_perc["submitted"] = 100 / self.stat["sent"] * self.stat["submitted"]
+        self.stat_position = []
+        for key, value in self.stat_position_dict.items():
+            self.stat_position.append(value)
+        
+        for stat in self.stat_position:
+            perc = {}
+            perc["name"] = stat["name"]
+            perc["sent"] = 100
+            perc["opened"] = round(100 / stat["sent"] * stat["opened"])
+            perc["clicked"] = round(100 / stat["sent"] * stat["clicked"])
+            perc["submitted"] = round(100 / stat["sent"] * stat["submitted"])
+            self.stat_position_perc.append(perc)
+
         
 
     def events_timeline(self,eventlist):
